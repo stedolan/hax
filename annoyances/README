@@ -3,3 +3,11 @@ in all sorts of interesting ways.
 
 xmouse.c
   Make the X11 cursor dance
+evil
+  Reduce a terminal to uselessness by showing an unkillable
+  bash prompt that won't go away and won't perform any
+  useful command.
+bounce
+  Cause the cursor to jump to random positions on the screen
+  every few seconds. Great fun *on someone else's
+  terminal*. For added effect, run while using "vi".

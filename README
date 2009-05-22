@@ -3,3 +3,11 @@ over the last while. They may be useful, they may be funny,
 they may be buggy, they may make your computer
 explode. Caveat downloader.
 
+Directories:
+
+annoyances/
+  Break your terminal/X session (or preferably someone
+  else's) in all sorts of interesting ways.
+twisty_code/
+  Various strange, incomprehensible twisty snippets of
+  code. Warning: Perl.

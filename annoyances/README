@@ -1,0 +1,5 @@
+Break your terminal/X session (or preferably someone else's)
+in all sorts of interesting ways.
+
+xmouse.c
+  Make the X11 cursor dance

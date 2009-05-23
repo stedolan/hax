@@ -3,6 +3,8 @@ hacks. Then I categorised it, and some things didn't
 fit. So, my misc folder has a misc folder. (yo dawg, we
 heard you like miscellanies...)
 
+justlook
+  Yeah...
 prettyprinter.lua
   A pretty-printer for lua. The only useful function,
   "show", prints out a representation of its argument. It

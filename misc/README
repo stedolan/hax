@@ -14,3 +14,23 @@ prettyprinter.lua
   best, and recursion is handled nicely (i.e. doesn't cause
   infinite output). In most cases, output is valid Lua
   (doesn't work for things like functions).
+straightdown.c
+  Shut down a Linux machine very, very quickly. May have
+  unintended consequences (data loss and the like).
+unip
+  IPv4 addresses are generally written as 4 bytes, in
+  decimal, separated by dots. However, it is also valid to
+  write them with two, one or zero dots, with the last group
+  representing 16, 24 or 32 bits. For example, 192.168.1.1
+  is the same address as 192.168.257, 192.11010305, or just
+  3232235777. If you are silly enough to base your security
+  on how many dots the domain name of a website has, this
+  alternative notation will defeat it (don't laugh. MS did
+  this for IE4, see [1]. Then, having fixed it, they did it
+  again for IE5 and IE6 [2].) These days, it can still be
+  used to get slightly more access than the designers
+  intended on some badly-designed web kiosks. This is a
+  simple program to convert normal 4-group IPs to dotless
+  ones.
+  [1] http://www.microsoft.com/technet/security/bulletin/ms98-016.mspx
+  [2] http://www.microsoft.com/technet/security/bulletin/ms01-051.mspx

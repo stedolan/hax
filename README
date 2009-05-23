@@ -11,3 +11,5 @@ annoyances/
 twisty_code/
   Various strange, incomprehensible twisty snippets of
   code. Warning: Perl.
+websites/
+  Scripts to automate or otherwise play with various websites

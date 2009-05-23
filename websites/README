@@ -1,0 +1,21 @@
+Scripts to automate or otherwise play with various websites
+
+inkyisawesome
+  Fresh garbage, from inky's meme.boxofjunk.ws, which could very
+  likely pass the Turing test on 4chan. This one spent a long time in
+  my .bashrc.
+pastebin
+  Script to paste contents of a file given as an argument or else
+  stdin to pastebin.com. Posts it under your own username, and prints
+  an url to stdout, ready for cut-and-paste to IRC.
+randtube
+  Time-wasting of an epic scale. Picks a random word from the English
+  language, searches google for YouTube videos about that word,
+  returns a random result. Code is... not pretty. Yay for shell
+  scripts. See a slightly different version at
+  http://netsoc.tcd.ie/~mu/cgi-bin/randtube.cgi
+zp
+  Incrementally downloads all of Zero Punctuation (by Yahtzee of the
+  Escapist Magazine, http://escapistmagazine.com) to the current
+  directory, for watching all at once or viewing them in times of no
+  intarwub.

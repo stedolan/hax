@@ -1,0 +1,76 @@
+#!/usr/bin/perl -W
+use strict;
+
+use LWP::UserAgent;
+use LWP::Simple;
+use URI::Escape;
+use Digest::MD5 qw/md5_hex/;
+
+my $ua = LWP::UserAgent->new;
+$ua->env_proxy;
+
+sub geturl{
+    my $num = $_[0];
+my $resp = $ua->post("http://www.themis-group.com/global/castfire/m4v/$num", Content => 'version=ThemisMedia1%2E2&format='.md5_hex("Video $num Hash"));
+if ($resp -> is_success){
+    $resp->content =~ /^url=(.*)/;
+    my $url = uri_unescape($1);
+    return $url;
+}else{
+    die $resp->status_line;
+}
+}
+
+sub download{
+    my $num = $_[0];
+    my $snum = sprintf "%04d", $num;
+    my @alreadydownloaded = <${snum}*>;
+    return if @alreadydownloaded;
+    my $url = geturl $num;
+    my ($file) = $url =~ m#.*/(.*)#;
+    my $outfile = "${snum}_${file}";
+    $outfile =~ s/\s+/_/g;
+    if (-e $file){
+	print "$file exists with old name, renaming\n";
+	rename $file, $outfile;
+    }else{
+	print "grabbing $file [$snum]\n";
+	getstore $url, $outfile;
+	print "got $file\n";
+    }
+}
+
+sub listzp{
+    my %ids;
+    for (my $pgid=1; ; $pgid++){
+	my $resp = $ua->get("http://www.escapistmagazine.com/videos/view/zero-punctuation?page=$pgid");
+	if ($resp->is_success){
+	    my $page = $resp->content;
+	    my $newvid = 0;
+	    while ($page =~ m#videos/view/zero-punctuation/(.*?)>#g){
+		my $url = $1;
+		my ($id) = $url =~ /^([0-9]+)/;
+		if (defined $id){
+		    if (!defined $ids{$id}){
+			$ids{$id} = 1;
+			$newvid = 1;
+		    }
+		}else{
+		    print "Couldn't parse ZP url: $url\n";
+		}
+	    }
+	    if (!$newvid){
+		return sort {$a <=> $b} keys %ids;
+	    }
+	}else{
+	    die $resp->status_line;
+	}
+    }
+}
+print "Dumping ZP...\n";
+my @zp = listzp;
+print scalar @zp, " ZPs found\n";
+for my $i (@zp){
+    download $i;
+}
+print "All done\n";

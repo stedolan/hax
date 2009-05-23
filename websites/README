@@ -4,6 +4,24 @@ inkyisawesome
   Fresh garbage, from inky's meme.boxofjunk.ws, which could very
   likely pass the Turing test on 4chan. This one spent a long time in
   my .bashrc.
+mung
+  mung <lang>, where lang is a two-letter language code such
+  as fr, de, ko, ja, etc. will read some text from standard
+  in, and use google translate to translate it from English
+  to the specified language and back again, often with
+  hilarious results (especially with Korean). Examples:
+   mung ja:
+    input: Does it work?
+    output: How it works?
+   mung ko:
+    input: Do you speak languages other than Korean?
+    output: In addition to Korean, you'll know you?
+   mung ko:
+    input: That's what she thought he said she did.
+    output: She said that she thinks he's
+   mung ko:
+    input: tickle, tickle, poke, poke
+    output: ,,, Poke poke Epilepsy Epilepsy
 pastebin
   Script to paste contents of a file given as an argument or else
   stdin to pastebin.com. Posts it under your own username, and prints

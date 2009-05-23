@@ -1,0 +1,25 @@
+#!/usr/bin/perl -W
+use strict;
+use LWP;
+use HTTP::Request::Common qw(POST);
+use HTML::Entities;
+my $ua = LWP::UserAgent->new(env_proxy=>1, agent=>"Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.10) Gecko/20071115 Iceweasel/2.0.0.10 (Debian-2.0.0.10-0etch1)");
+sub trans{
+    my ($lang,$text) = ("$_[0]|$_[1]", $_[2]);
+    my $req = POST "http://www.google.com/translate_t?lang_pair=$lang",[
+      hl=>"en",
+      ie=>"UTF8",
+      text=>$text,
+      langpair=>$lang];
+    $ua->request($req)->content =~ m#<textarea name=utrans .*?>(.*?)</textarea>#s;
+    return decode_entities(decode_entities($1)); # Yes, twice.
+}
+sub mung{
+  my ($lang, $text) = @_;
+  return trans($lang, "en", trans("en", $lang, $text));
+}
+local $/;
+my $text = <STDIN>;
+my $lang = $ARGV[0] || "ko";
+print STDERR "Converting from en to $lang and back again...\n";
+print mung($lang,$text),"\n";

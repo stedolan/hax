@@ -1,0 +1,16 @@
+I made a repository for all of my miscellaneous scripts and
+hacks. Then I categorised it, and some things didn't
+fit. So, my misc folder has a misc folder. (yo dawg, we
+heard you like miscellanies...)
+
+prettyprinter.lua
+  A pretty-printer for lua. The only useful function,
+  "show", prints out a representation of its argument. It
+  handles all the standard Lua types, and has special
+  support for tables: nested tables are indented nicely,
+  tables are printed out as a combination of any of the Lua
+  syntaxes {1,2,3}, {x = 1, y = 2}, {["x"]=1, ["y"]=2}
+  according to various heuristics about which would look
+  best, and recursion is handled nicely (i.e. doesn't cause
+  infinite output). In most cases, output is valid Lua
+  (doesn't work for things like functions).

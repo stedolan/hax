@@ -1,7 +1,7 @@
 This is just a bunch of random scripts that I've written
 over the last while. They may be useful, they may be funny,
-they may be buggy, they may make your computer
-explode. Caveat downloader.
+they may be buggy, they may make your computer explode.
+Caveat downloader.
 
 Directories:
 
@@ -12,4 +12,14 @@ twisty_code/
   Various strange, incomprehensible twisty snippets of
   code. Warning: Perl.
 websites/
-  Scripts to automate or otherwise play with various websites
+  Scripts to automate or otherwise play with various
+  websites
+misc/
+  I made a repository for all of my miscellaneous scripts
+  and hacks. Then I categorised it, and some things didn't
+  fit. So, my misc folder has a misc folder. (yo dawg, we
+  heard you like miscellanies...)
+
+
+For those who care: all code in this repo, unless indicated
+otherwise, is licensed under the GPLv2.

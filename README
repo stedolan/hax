@@ -14,6 +14,8 @@ twisty_code/
 websites/
   Scripts to automate or otherwise play with various
   websites
+puzzles/
+  Some puzzles in code.
 misc/
   I made a repository for all of my miscellaneous scripts
   and hacks. Then I categorised it, and some things didn't

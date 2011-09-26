@@ -1,0 +1,146 @@
+#!/bin/bash
+
+appendchunk () { 
+    local file marker
+    file="$1"
+    marker="$2"
+    cp "$file" "$file.old"
+    {
+        cat "$file" | awk //;
+        echo "### BEGIN $marker"; 
+        cat | awk //;
+        echo "### END $marker";
+    } > "$file.tmp.$$"
+    mv "$file.tmp.$$" "$file"
+}
+
+delchunk () {
+    local file marker
+    file="$1"
+    marker="$2"
+    cp "$file" "$file.old"
+    sed "/^### BEGIN $marker\$/,/^### END $marker\$/d" "$file" > "$file.tmp.$$"
+    mv "$file.tmp.$$" "$file"
+}
+
+listchunks () {
+    local file="$1"
+    sed -n 's/^### BEGIN \(.*\)/\1/p' "$file"
+}
+
+
+
+SSH_DIR="$HOME/.ssh"
+SSH_CONFIG="$SSH_DIR/config"
+
+[ -d "$SSH_DIR" ] || { echo "SSH config directory not found"; exit 2; }
+
+
+
+
+ssh_ctl () { 
+    local h
+    h="$1_$2"
+    [ -e "$SSH_DIR/sshbounce_$h" ] || { echo "No such tunnel $2"; return 2; }
+    shift; shift;
+    ssh x -o ControlMaster=no -o ControlPath="$SSH_DIR/sshbounce_$h" $@ 2>&1
+}
+
+cmd_kill () {
+    local h
+    for h in "$@"; do
+        ssh_ctl tgt "$h" -O exit >/dev/null
+        ssh_ctl fwd "$h" -O exit && delchunk "$SSH_CONFIG" "$h"
+    done
+}
+
+cmd_list () {
+    local h
+    for h in $(listchunks "$SSH_CONFIG"); do
+        echo -n $h
+        status=$(ssh_ctl fwd "$h" -O check 2>&1)
+        if [ $? = 0 ] ; then
+            echo " [$(echo "$status" | grep -o 'pid=[0-9]\+')]"
+        else
+            echo " [dead]"
+            delchunk "$SSH_CONFIG" "$h"
+        fi
+    done
+}
+
+cmd_tunnel () {
+    localportbase=$((10000 + (RANDOM+RANDOM+RANDOM+RANDOM+RANDOM)%50000))
+    
+    s="$(cmd_list | sed 's/ \[.*\]//' | grep -xF "$(for node in "$@"; do echo "$node"; done)")"
+    if ! [ -z "$s" ]; then
+        echo "Tunnels for" $s "already exist"
+        exit 2
+    fi
+
+    for node in "$@"; do
+        cmd_list | grep -F "$node"
+        user="${node%%@*}"
+        hostport="${node#*@}"
+        [ "$user" = "$hostport" ] && user=''
+        host="${hostport%%:*}"
+        port="${hostport#*:}"
+        [ "$host" = "$port" ] && port=''
+        
+        
+        if ! [ -z "$lastnode" ]; then
+            localport=$((localportbase++))
+            echo "Forwarding $node via $lasthost"
+            ssh -f -N "$lasthost" ${lastuser:+-l "$lastuser"} ${lastport:+-p "$lastport"} -L $localport:"$host":${port:-22} -o ExitOnForwardFailure=yes -o ControlMaster=yes -o ControlPath="$SSH_DIR/sshbounce_fwd_$node"
+            if ! [ $? = 0 ]; then
+                echo "Could not tunnel through $lastnode"
+                exit 1
+            fi
+            appendchunk "$SSH_CONFIG" "$node" <<EOF
+Host $host
+HostName 127.0.0.1
+UserKnownHostsFile /dev/null
+Port $localport
+${user:+User $user}
+EOF
+        fi
+        
+        lastnode="$node"
+        lastuser="$user"
+        lasthost="$host"
+        lastport="$port"
+    done
+
+    echo "Connecting to $lasthost"
+    ssh -f -N "$lasthost" -o ControlMaster=yes -o ControlPath="$SSH_DIR/sshbounce_tgt_$lastnode"
+    if ! [ $? = 0 ]; then
+        echo "Could not connect to $lastnode"
+        exit 1
+    fi
+    delchunk "$SSH_CONFIG" "$lastnode"
+    appendchunk "$SSH_CONFIG" "$lastnode" <<EOF
+Host $lasthost
+HostName 0.0.0.0
+UserKnownHostsFile /dev/null
+ControlPath=$SSH_DIR/sshbounce_tgt_$lastnode
+${user:+User $user}
+EOF
+    
+    echo "Tunnel created."
+}
+
+
+usage () {
+    echo "Usage: $0 host1 user2@host2:port2   Set up an SSH tunnel"
+    echo "       $0 -l                        List tunnels"
+    echo "       $0 -k user2@host2:port2      Kill a tunnel"
+    exit 2
+}
+
+
+case "$1" in
+    -k) shift; [ -z "$1" ] && usage; cmd_kill "$@" ;;
+    -l) [ -z "$2" ] || usage; cmd_list ;;
+    -*) usage ;;
+    '') usage ;;
+    *) cmd_tunnel "$@" ;;
+esac

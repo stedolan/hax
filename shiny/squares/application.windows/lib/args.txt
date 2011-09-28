@@ -1,0 +1,3 @@
+
+squares
+squares.jar,core.jar

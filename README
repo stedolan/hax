@@ -25,6 +25,8 @@ actually_useful/
   As well as the above silliness, I do from time to time 
   produce programs that do something worth doing. I'm hiding
   them here in case anyone finds out.
+shiny/
+  Various animations in Processing I made in first year.
 
 For those who care: all code in this repo, unless indicated
 otherwise, is licensed under the GPLv2.

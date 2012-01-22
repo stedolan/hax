@@ -1,0 +1,3 @@
+ -Xms64m -Xmx400m 
+rain
+rain.jar,core.jar
